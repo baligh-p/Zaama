@@ -1,8 +1,10 @@
-import React,{useEffect} from 'react'
+import React,{useEffect,useState} from 'react'
 import {Link} from "react-router-dom"
+import $ from "jquery"
 import "../scss/nav.scss"
 const Nav = () => {
     /*handle change burger with classes*/ 
+    const [lastScroll, setLastScroll] = useState(null)
     const burgerClick=()=>{
         var idBurger=document.getElementById("burger");
         var liste=document.querySelector(".leftNav");
@@ -16,15 +18,48 @@ const Nav = () => {
              liste.style.width="0";
         }
     }
-
-
+    /*handle nav state after scrolling*/
+    const changeStateNav=()=>{
+        const navBar=document.querySelector(".navBar")
+        if(window.innerWidth>=1024)
+        {
+            if(lastScroll>=window.scrollY && window.scrollY>80)
+            {
+                navBar.style.height=""
+                setTimeout(()=>{
+                    if(window.scrollY > 80) navBar.style.height="0"
+                },2000)
+            }
+            else 
+            {
+                if(window.scrollY>80)
+                {
+                    navBar.style.height="0"
+                }
+                else 
+                {
+                    navBar.style.height=""
+                }
+            }
+            setLastScroll(window.scrollY)
+        }
+    }
+    useEffect(() => {
+        changeStateNav();/* for changing page or refresh */
+    },[])
+    useEffect(() => {
+        $(window).scroll(changeStateNav)
+        return () => {
+            $(window).off("scroll")
+        }
+    })
     return (
-        <div className="w-full fixed top-0 left-0 flex items-center justify-between shadow-md h-20 2xl:h-28 2xl:shadow-lg lg:h-16">
-            <div className="flex items-center lg:justify-center justify-between relative xl:right-24 lg:w-3/12 w-full xl:w-4/12">
-                <div id="burger" className="lg:hidden z-40" onClick={burgerClick}><div className="burger h-20 w-20 flex flex-col justify-center items-center"></div></div>
+        <div className="navBar overflow-hidden transition-all delay-200 duration-300  w-full fixed top-0 left-0 flex items-center justify-between shadow-md h-20 2xl:h-28 2xl:shadow-lg lg:h-16 bg-white">
+            <div className="flex items-center lg:justify-center justify-between lg:w-3/12 w-full xl:w-3/12">
+                <div className="lg:hidden z-40" onClick={burgerClick} id="burger"><div className="burger h-20 w-20 flex flex-col justify-center items-center"></div></div>
                 <h1 className="text-3xl w-full lg:w-auto text-center lg:text-left 2xl:text-6xl text-indigo-600 self-center font-title tracking-wider cursor-pointer">Yenjah?<span className="text-md text-red-500">.tn</span></h1>
             </div>
-            <div className="leftNav transition-all delay-75 duration-300 whitespace-nowrap lg:w-6/12 z-30 bg-white xl:w-4/12 flex flex-col lg:flex-row fixed left-0 top-0 w-0 overflow-hidden lg:static h-full items-center justify-center lg:justify-around  font-body 2xl:text-3xl font-semibold text-neutral-600">
+            <div id="leftNav" className="leftNav transition-all delay-75 duration-300 whitespace-nowrap lg:w-6/12 z-30 bg-white xl:w-5/12 flex flex-col lg:flex-row fixed left-0 top-0 w-0 overflow-hidden lg:static h-full items-center justify-center lg:justify-around font-body 2xl:text-3xl font-semibold text-neutral-600">
                 <div>
                     <Link to="/" className="hover:text-blue-700 transition-colors delay-100 duration-200">Home</Link>
                 </div>
