@@ -56,7 +56,7 @@ const Nav = () => {
     return (
         <div className="navBar overflow-hidden transition-all delay-200 duration-300  w-full fixed top-0 left-0 flex items-center justify-between shadow-md h-20 2xl:h-28 2xl:shadow-lg lg:h-16 bg-white">
             <div className="flex items-center lg:justify-center justify-between lg:w-3/12 w-full xl:w-3/12">
-                <div className="lg:hidden z-40" onClick={burgerClick} id="burger"><div className="burger h-20 w-20 flex flex-col justify-center items-center"></div></div>
+                <div className="lg:hidden z-40" onClick={burgerClick} id="burger"><div className="burger h-20 w-20 flex flex-col justify-center lg:hidden items-center"></div></div>
                 <h1 className="text-3xl w-full lg:w-auto text-center lg:text-left 2xl:text-6xl text-indigo-600 self-center font-title tracking-wider cursor-pointer">Yenjah?<span className="text-md text-red-500">.tn</span></h1>
             </div>
             <div id="leftNav" className="leftNav transition-all delay-75 duration-300 whitespace-nowrap lg:w-6/12 z-30 bg-white xl:w-5/12 flex flex-col lg:flex-row fixed left-0 top-0 w-0 overflow-hidden lg:static h-full items-center justify-center lg:justify-around font-body 2xl:text-3xl font-semibold text-neutral-600">
