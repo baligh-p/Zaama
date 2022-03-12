@@ -28,7 +28,7 @@ const Nav = () => {
                 navBar.style.height=""
                 setTimeout(()=>{
                     if(window.scrollY > 80) navBar.style.height="0"
-                },2000)
+                },2500)
             }
             else 
             {
@@ -44,8 +44,19 @@ const Nav = () => {
             setLastScroll(window.scrollY)
         }
     }
+    /*make navbar visible when we resize screen when navbar not visible in the lg screen*/
     useEffect(() => {
-        changeStateNav();/* for changing page or refresh */
+        const handleResizeScreen=()=>{
+            document.querySelector(".navBar").style.height=""
+        }
+        window.addEventListener("resize",handleResizeScreen)
+        return ()=>{
+            window.removeEventListener("resize",handleResizeScreen)
+        }
+    }, [])
+    /* for changing page or refresh */
+    useEffect(() => {
+        changeStateNav();
     },[])
     useEffect(() => {
         $(window).scroll(changeStateNav)
@@ -59,7 +70,21 @@ const Nav = () => {
                 <div className="lg:hidden z-40" onClick={burgerClick} id="burger"><div className="burger h-20 w-20 flex flex-col justify-center lg:hidden items-center"></div></div>
                 <h1 className="text-3xl w-full lg:w-auto text-center lg:text-left 2xl:text-6xl text-indigo-600 self-center font-title tracking-wider cursor-pointer">Yenjah?<span className="text-md text-red-500">.tn</span></h1>
             </div>
-            <div id="leftNav" className="leftNav transition-all delay-75 duration-300 whitespace-nowrap lg:w-6/12 z-30 bg-white xl:w-5/12 flex flex-col lg:flex-row fixed left-0 top-0 w-0 overflow-hidden lg:static h-full items-center justify-center lg:justify-around font-body 2xl:text-3xl font-semibold text-neutral-600">
+            <div className="transition-all delay-75 duration-300 whitespace-nowrap lg:w-6/12 z-30 bg-white xl:w-5/12 hidden lg:flex flex-col lg:flex-row fixed left-0 top-0 w-0 overflow-hidden lg:static h-full items-center justify-center lg:justify-around font-body 2xl:text-3xl font-semibold text-neutral-600">
+                <div>
+                    <Link to="/" className="hover:text-blue-700 transition-colors delay-100 duration-200">Home</Link>
+                </div>
+                <div>
+                    <Link to="/AddPosts" className="hover:text-blue-700 transition-colors delay-100 duration-200">Add Posts</Link>
+                </div>
+                <div>
+                    <Link to="/Myposts" className="hover:text-blue-700 delay-100 duration-200">My Posts</Link>
+                </div>
+                <div>
+                    <Link to="/Contact" className="hover:text-blue-700 delay-100 duration-200">Contact us</Link>
+                </div>
+            </div>
+            <div className="leftNav lg:hidden transition-all delay-75 duration-300 whitespace-nowrap lg:w-6/12 z-30 bg-white xl:w-5/12 flex flex-col lg:flex-row fixed left-0 top-0 w-0 overflow-hidden lg:static h-full items-center justify-center lg:justify-around font-body 2xl:text-3xl font-semibold text-neutral-600">
                 <div>
                     <Link to="/" className="hover:text-blue-700 transition-colors delay-100 duration-200">Home</Link>
                 </div>
