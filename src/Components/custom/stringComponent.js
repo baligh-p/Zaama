@@ -47,24 +47,40 @@ export const UsePerfectPassword=(pwd,length={max:20,min:6})=>{
     arrayException=[...arrayException,(pwd.length < length.min ? "Very short Password (<6)" : "Very long Password (>20)")]
    }
    /*at least one letter*/
+   var pwdContains=""
    const nbrLetter=Array.from(pwd)
    .filter(x=>(x.charCodeAt(0)>=65&& x.charCodeAt(0)<=90) 
    || (x.charCodeAt(0)>=97&& x.charCodeAt(0)<=122) ).length
    if(nbrLetter===0)
    {
-       arrayException=[...arrayException,"Password should contains at least 1 letter"]
+       pwdContains+="Password should contains at least 1 letter"
    }
    /*at least one number*/
    const nbrNumber=Array.from(pwd)
    .filter(x=>(x.charCodeAt(0)>=48&& x.charCodeAt(0)<=57)).length
    if(nbrNumber===0)
    {
-       arrayException=[...arrayException,"Password should contains at least 1 number"]
+       if(nbrLetter===0)
+       {
+           pwdContains+=" , 1 number"
+       }
+       else 
+       {
+           pwdContains+="Password should contains at least 1 number"
+       }
    }
    /*at least one special char*/
    if((nbrNumber+nbrLetter+Array.from(pwd).filter(x=>x==" ").length)===pwd.length)
    {
-       arrayException=[...arrayException,"Password should contains at least 1 special character"]
+       if(nbrLetter===0||nbrNumber===0)
+       {
+           pwdContains+=" , 1 special Character"
+       }
+       else 
+       {
+           pwdContains+="Password should contains at least 1 special Character"
+       }
    }
+   if(pwdContains) arrayException=[...arrayException,pwdContains]
    return arrayException
 }
