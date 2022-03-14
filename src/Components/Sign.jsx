@@ -4,6 +4,7 @@ import {Link,useNavigate} from "react-router-dom"
 import {contextApi} from "../index"
 import Loader from "./Loader"
 import axios from "axios"
+import {useCookies} from "react-cookie"
 import "../scss/loading.scss"
 import {UseTrueString,UseTrueLength,UseTrueEmail,UseTrueOneWord,UsePerfectPassword} from "./custom/stringComponent"
 const Sign = () => {
@@ -22,16 +23,26 @@ const FormSign=()=>{
     const [loading,setLoading]=useState(false)
     const [loadingUserName,setLoadingUserName]=useState(false)
     const [userExist,setUserExist]=useState(false)
+    const [showRemoveImage,setShowRemoveImage]=useState(false)
     /*useRef*/
     const inputUserName=useRef(null) 
     const inputPassword=useRef(null)
     const inputConfirme=useRef(null)
     const inputEmail=useRef(null)
     const inputImage=useRef(null)
+    const imageFile=useRef()
     /* handle input state */
     const navigate=useNavigate()
     const {url} = useContext(contextApi)
-
+    /*verify if we had already cookie clid*/ 
+    const [cookie,setCookie]=useCookies()
+    useEffect(() => {
+        if(cookie.clid!=undefined)
+        {
+            navigate("/")
+        }
+    }, [])
+    /* other */
     const handleFocusInput=(e)=>{
         if(e.target.value=="")
         {
@@ -110,6 +121,7 @@ const FormSign=()=>{
             data.append("username",UseTrueString(inputUserName.current.value))
             data.append("email",inputEmail.current.value)
             data.append("password",inputPassword.current.value)
+            if(inputImage.current.value!="") data.append("photo",inputImage.current.files[0])
             await axios.post(`${url}signUp.php`,data).then((res)=>{
                 setLoading(false)
                 if(res.data.nbrUser!=0)
@@ -119,6 +131,7 @@ const FormSign=()=>{
                 }
                 else 
                 {
+                    setCookie("clid",res.data.id,{maxAge:60*60*3*24})
                     navigate("/")
                 }
             })
@@ -140,6 +153,29 @@ const FormSign=()=>{
             }
             })
         }
+    }
+    const handlePhotoChange=()=>{
+        if(inputImage.current.value!="")
+        {
+            imageFile.current.src=URL.createObjectURL(inputImage.current.files[0])
+            imageFile.current.style.height="100%"
+            imageFile.current.style.width="100%"
+            setShowRemoveImage(true)
+        }
+        else 
+        {
+            imageFile.current.src="./icons/addPhoto.png"
+            imageFile.current.style.height=""
+            imageFile.current.style.width=""
+            setShowRemoveImage(false)
+        }
+    }
+    const removePhoto=()=>{
+        inputImage.current.value=""
+        imageFile.current.style.height=""
+        imageFile.current.style.width=""
+        imageFile.current.src="./icons/addPhoto.png"
+        setShowRemoveImage(false)
     }
     useEffect(() => {
         inputUserName.current.addEventListener("blur",checkUniqueUsername)
@@ -181,11 +217,12 @@ const FormSign=()=>{
                 onFocus={handleFocusInput} onBlur={handleBlurInput}/>
             </div>
             {/*photo de profil*/}
-            <input type="file" ref={inputImage} className="hidden"/>
-            <div className="lg:w-6/12 xl:w-4/12 w-10/12 md:w-4/12 cursor-pointer" onClick={()=>{inputImage.current.click()}}>
+            <input type="file" ref={inputImage} onInput={handlePhotoChange} className="hidden"/>
+            <div className="lg:w-6/12 xl:w-4/12 w-10/12 md:w-4/12 cursor-pointer"  >
                <h5 className="w-full text-sm 2xl:text-lg">Add profile photo (<span className="text-green-500">Not required</span>)</h5>
-               <div className="border-2 border-stone-400 w-full h-60 2xl:h-80 flex flex-col justify-center items-center">
-                    <img className="h-20 w-20" src="./icons/addPhoto.png" alt="add photo of profile"/>
+               {showRemoveImage&&<img src="./icons/close.png" onClick={removePhoto} className="w-6 h-6 ml-auto mr-3 relative top-8" alt="cancel image profil"/>}
+               <div className="border-2 border-stone-400 w-full h-60 2xl:h-80 flex flex-col justify-center items-center" >
+                    <img className="h-20 w-20" onClick={()=>{inputImage.current.click()}} src="./icons/addPhoto.png" alt="add photo of profile" ref={imageFile} />
                </div>
             </div>
             {/*btn submit*/}

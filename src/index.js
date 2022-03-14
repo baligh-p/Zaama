@@ -4,7 +4,7 @@ import './index.css';
 import App from './Components/App';
 
 const data={
-  url:"http://localhost/yenjahBackend/"
+  url:"http://localhost/zaama/yenjahBackend/"
 }
 
 export const contextApi=React.createContext()

@@ -1,4 +1,4 @@
-import React,{useRef,useContext,useState} from 'react'
+import React,{useRef,useContext,useState,useEffect} from 'react'
 import {Link,useNavigate} from "react-router-dom"
 import {contextApi} from "../index"
 import Loader from "./Loader"
@@ -29,8 +29,15 @@ const LoginForm=()=>{
     const {url}=useContext(contextApi)
     /*navigate*/ 
     const navigate=useNavigate()
+    /*verify if we had already cookie clid*/ 
     /*cookies*/ 
     const [cookie,setCookie]=useCookies()
+    useEffect(() => {
+        if(cookie.clid!=undefined)
+        {
+            navigate("/")
+        }
+    }, [])
     /*useState*/ 
     const [loading,setLoading]=useState(false)
     const [errorMessage,setErrorMessage]=useState(false)

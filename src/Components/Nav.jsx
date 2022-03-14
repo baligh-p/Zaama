@@ -1,44 +1,47 @@
-import React,{useEffect,useState} from 'react'
-import {Link} from "react-router-dom"
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate} from "react-router-dom"
+import { useCookies } from "react-cookie"
 import $ from "jquery"
 import "../scss/nav.scss"
 const Nav = () => {
-    /*handle change burger with classes*/ 
+    /*handle change burger with classes*/
     const [lastScroll, setLastScroll] = useState(null)
-    const burgerClick=()=>{
-        var idBurger=document.getElementById("burger");
-        var liste=document.querySelector(".leftNav");
-        if(idBurger.getAttribute("class")!=="active z-40")
-        {
+    const burgerClick = () => {
+        var idBurger = document.getElementById("burger");
+        var liste = document.querySelector(".leftNav");
+        if (idBurger.getAttribute("class") !== "active z-40") {
             idBurger.setAttribute("class", "active z-40");
-            liste.style.width="100%";
+            liste.style.width = "100%";
         }
-        else{
-             idBurger.setAttribute("class", "Notactive z-40");
-             liste.style.width="0";
+        else {
+            idBurger.setAttribute("class", "Notactive z-40");
+            liste.style.width = "0";
         }
     }
+    /*redirect if don't have account*/
+    const navigate = useNavigate()
+    const [cookie, setCookie] = useCookies()
+    useEffect(() => {
+        if (cookie.clid === undefined) {
+            navigate("/Login")
+        }
+    }, [])
     /*handle nav state after scrolling*/
-    const changeStateNav=()=>{
-        const navBar=document.querySelector(".navBar")
-        if(window.innerWidth>=1024)
-        {
-            if(lastScroll>=window.scrollY && window.scrollY>80)
-            {
-                navBar.style.height=""
-                setTimeout(()=>{
-                    if(window.scrollY > 80) navBar.style.height="0"
-                },2500)
+    const changeStateNav = () => {
+        const navBar = document.querySelector(".navBar")
+        if (window.innerWidth >= 1024) {
+            if (lastScroll >= window.scrollY && window.scrollY > 80) {
+                navBar.style.height = ""
+                setTimeout(() => {
+                    if (window.scrollY > 80) navBar.style.height = "0"
+                }, 2500)
             }
-            else 
-            {
-                if(window.scrollY>80)
-                {
-                    navBar.style.height="0"
+            else {
+                if (window.scrollY > 80) {
+                    navBar.style.height = "0"
                 }
-                else 
-                {
-                    navBar.style.height=""
+                else {
+                    navBar.style.height = ""
                 }
             }
             setLastScroll(window.scrollY)
@@ -46,18 +49,18 @@ const Nav = () => {
     }
     /*make navbar visible when we resize screen when navbar not visible in the lg screen*/
     useEffect(() => {
-        const handleResizeScreen=()=>{
-            document.querySelector(".navBar").style.height=""
+        const handleResizeScreen = () => {
+            document.querySelector(".navBar").style.height = ""
         }
-        window.addEventListener("resize",handleResizeScreen)
-        return ()=>{
-            window.removeEventListener("resize",handleResizeScreen)
+        window.addEventListener("resize", handleResizeScreen)
+        return () => {
+            window.removeEventListener("resize", handleResizeScreen)
         }
     }, [])
     /* for changing page or refresh */
     useEffect(() => {
         changeStateNav();
-    },[])
+    }, [])
     useEffect(() => {
         $(window).scroll(changeStateNav)
         return () => {
