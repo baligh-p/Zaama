@@ -5,7 +5,6 @@ import Loader from "./Loader"
 import axios from "axios"
 import {useCookies} from "react-cookie"
 import {UseTrueString} from "./custom/stringComponent"
-import { data } from 'jquery'
 const Login = () => {
     return (
         <div className="min-h-screen lg:h-screen  w-full flex">
@@ -34,6 +33,7 @@ const LoginForm=()=>{
     const [cookie,setCookie]=useCookies()
     /*useState*/ 
     const [loading,setLoading]=useState(false)
+    const [errorMessage,setErrorMessage]=useState(false)
     /*useRef*/
     const keepMeLoggedInput=useRef(null)
     const inputUserName=useRef(null) 
@@ -64,11 +64,17 @@ const LoginForm=()=>{
     const handleSubmit=async(e)=>{
         e.preventDefault()
         setLoading(true)
-        const username=HttpUtility.UrlEncode(inputUserName.current.value)
-        const password=HttpUtility.UrlEncode(inputPassword.current.value)
-        await axios.get(`${url}login.php?un=${username}&pwd=${password}`).then((res)=>{
+        await axios.get(`${url}login.php?un=${encodeURIComponent(UseTrueString(inputUserName.current.value))}&pwd=${encodeURIComponent(inputPassword.current.value)}`).then((res)=>{
             setLoading(false)
-            console.log(res.data)
+            if(res.data!=null)
+            {
+                setCookie("clid",res.data.idProfil,{maxAge:60*60*24*3})
+                navigate("/")
+            }
+            else 
+            {
+                setErrorMessage(true)
+            }
         })
     }
     return (
@@ -91,7 +97,11 @@ const LoginForm=()=>{
                 <input type="checkbox" ref={keepMeLoggedInput} className="cursor-pointer"/>
                 <label onClick={()=>{keepMeLoggedInput.current.click()}} className="text-sm 2xl:text-xl text-stone-500 cursor-pointer">Keep me Logged</label>
             </div>
-            <p></p>
+            {errorMessage&&
+            <div className="flex items-center lg:w-7/12 md:w-8/12 w-10/12">
+                <img src="./icons/cross.png" className="w-4 h-4 mr-3" alt="exception message"/>
+                <p className="text-xs 2xl:text-lg text-red-500 font-semibold tracking-widest w-full">invalid address and password conbining</p>
+            </div>}
             {loading&&(<Loader size="50px" border="7px"/>)||(<button onClick={handleSubmit} className="border-2 border-blue-600 rounded-sm bg-blue-600 2xl:py-3 py-2 px-7 text-white text-lg 2xl:text-2xl lg:w-7/12 md:w-8/12 w-10/12 hover:bg-white hover:text-blue-600 transition-all duration-200 delay-100">Log in</button>)}
             <div className="lg:w-7/12 w-full flex justify-center items-center lg:absolute bottom-0 bg-stone-200" >
                 <p className="text-md border-0 py-3 text-center 2xl:text-3xl w-full z-0">Don't have an Account ? <Link to="/sign" className="text-blue-600 cursor hover:underline underline-offset-1 underline-blue-600">Sign</Link></p>

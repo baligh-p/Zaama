@@ -112,7 +112,7 @@ const FormSign=()=>{
             data.append("password",inputPassword.current.value)
             await axios.post(`${url}signUp.php`,data).then((res)=>{
                 setLoading(false)
-                if(res.data.nbrUser>0)
+                if(res.data.nbrUser!=0)
                 {
                     setErrorMessage(["Email already Used"])
                     inputEmail.current.style.borderColor="#F72528"
@@ -128,7 +128,7 @@ const FormSign=()=>{
         if(UseTrueLength(inputUserName.current.value)>2)
         {
             setLoadingUserName(true)
-            await axios.get(`${url}signUp.php?user=${UseTrueString(inputUserName.current.value)}`).then((res)=>{
+            await axios.get(`${url}signUp.php?user=${UseTrueString(encodeURIComponent(inputUserName.current.value))}`).then((res)=>{
             setLoadingUserName(false)
             if(res.data.nbrUser>0)
             {
@@ -145,7 +145,7 @@ const FormSign=()=>{
         inputUserName.current.addEventListener("blur",checkUniqueUsername)
     },[])
     return(
-        <form className=" ml-auto flex flex-col justify-center 2xl:space-y-20 lg:space-y-10 space-y-14 items-center lg:w-7/12 w-full font-body my-10">
+        <form className="ml-auto flex flex-col justify-center 2xl:space-y-20 lg:space-y-10 space-y-14 items-center lg:w-7/12 w-full font-body my-10">
             <h4 className="text-3xl font-bold 2xl:text-6xl">Sign In</h4>
             <p className="text-sm w-8/12 lg:w-full 2xl:text-2xl text-center text-stone-400 relative bottom-5">Create an account and join advices world</p>
             {/*username */}
