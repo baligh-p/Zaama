@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate} from "react-router-dom"
+import React, { useEffect, useState ,useContext} from 'react'
+import { Link} from "react-router-dom"
 import { useCookies } from "react-cookie"
-import $ from "jquery"
+import {contextApi} from "../index"
+import $ from "jquery" 
+import axios from "axios"
 import "../scss/nav.scss"
 const Nav = () => {
     /*handle change burger with classes*/
     const [lastScroll, setLastScroll] = useState(null)
+    const [userData,setUserData]=useState({})
+    const [lastTimeOut,setLastTimeOut]=useState()
+    const [showMenu,setShowMenu]=useState(false)
     const burgerClick = () => {
         var idBurger = document.getElementById("burger");
         var liste = document.querySelector(".leftNav");
@@ -18,30 +23,45 @@ const Nav = () => {
             liste.style.width = "0";
         }
     }
-    /*redirect if don't have account*/
-    const navigate = useNavigate()
+    const {url} = useContext(contextApi)
+
     const [cookie, setCookie] = useCookies()
+    const fetchUserData=()=>{
+        const id=encodeURIComponent(cookie.clid)
+        axios.get(`${url}getUser.php?clid=${id}`).then((res)=>{
+            setUserData(res.data)
+        })
+    }
     useEffect(() => {
-        if (cookie.clid === undefined) {
-            navigate("/Login")
+        if (cookie.clid !== undefined){
+            fetchUserData()
         }
     }, [])
     /*handle nav state after scrolling*/
+    const showNavBar=()=>{
+       const navBar = document.querySelector(".navBar")
+       navBar.style.height = "" 
+    }
+    const hideNavBar=()=>{
+       const navBar = document.querySelector(".navBar")
+       navBar.style.height = "0" 
+    }
     const changeStateNav = () => {
-        const navBar = document.querySelector(".navBar")
+        clearTimeout(lastTimeOut)
         if (window.innerWidth >= 1024) {
             if (lastScroll >= window.scrollY && window.scrollY > 80) {
-                navBar.style.height = ""
-                setTimeout(() => {
-                    if (window.scrollY > 80) navBar.style.height = "0"
-                }, 2500)
+                showNavBar()
+                const time=setTimeout(() => {
+                    if (window.scrollY > 80) hideNavBar()
+                }, 4000)
+                setLastTimeOut(time)
             }
             else {
                 if (window.scrollY > 80) {
-                    navBar.style.height = "0"
+                    hideNavBar()
                 }
                 else {
-                    navBar.style.height = ""
+                    showNavBar()
                 }
             }
             setLastScroll(window.scrollY)
@@ -64,21 +84,25 @@ const Nav = () => {
     useEffect(() => {
         $(window).scroll(changeStateNav)
         return () => {
-            $(window).off("scroll")
+            $(window).off("scroll",changeStateNav)
         }
     })
+    const handleClientThinking=()=>{
+        clearTimeout(lastTimeOut)
+    }
     return (
-        <div className="navBar overflow-hidden transition-all delay-200 duration-300  w-full fixed top-0 left-0 flex items-center justify-between shadow-md h-20 2xl:h-28 2xl:shadow-lg lg:h-16 bg-white">
+        <div onMouseEnter={handleClientThinking} onMouseLeave={changeStateNav} className="navBar overflow-hidden transition-all delay-200 duration-300  w-full fixed top-0 left-0 flex items-center justify-between shadow-md h-20 2xl:h-28 2xl:shadow-lg lg:h-16 bg-white">
             <div className="flex items-center lg:justify-center justify-between lg:w-3/12 w-full xl:w-3/12">
                 <div className="lg:hidden z-40" onClick={burgerClick} id="burger"><div className="burger h-20 w-20 flex flex-col justify-center lg:hidden items-center"></div></div>
-                <h1 className="text-3xl w-full lg:w-auto text-center lg:text-left 2xl:text-6xl text-indigo-600 self-center font-title tracking-wider cursor-pointer">Yenjah?<span className="text-md text-red-500">.tn</span></h1>
+                <h1 className={`text-3xl w-full ${cookie.clid!=undefined&&"mr-20 lg:mr-0"} lg:w-auto text-center lg:text-left 2xl:text-6xl text-indigo-600 self-center font-title tracking-wider cursor-pointer`}>Yenjah?<span className="text-md text-red-500">.tn</span></h1>
             </div>
-            <div className="transition-all delay-75 duration-300 whitespace-nowrap lg:w-6/12 z-30 bg-white xl:w-5/12 hidden lg:flex flex-col lg:flex-row fixed left-0 top-0 w-0 overflow-hidden lg:static h-full items-center justify-center lg:justify-around font-body 2xl:text-3xl font-semibold text-neutral-600">
+            {/*for lg*/}
+            <div className={`transition-all delay-75 duration-300 whitespace-nowrap ${cookie.clid==undefined?"lg:w-6/12":"lg:w-5/12"}  z-30 bg-white xl:w-5/12 hidden lg:flex flex-col lg:flex-row fixed left-0 top-0 w-0 overflow-hidden lg:static h-full items-center justify-center lg:justify-around font-body 2xl:text-2xl font-semibold text-neutral-600`}>
                 <div>
                     <Link to="/" className="hover:text-blue-700 transition-colors delay-100 duration-200">Home</Link>
                 </div>
                 <div>
-                    <Link to="/AddPosts" className="hover:text-blue-700 transition-colors delay-100 duration-200">Add Posts</Link>
+                    <Link to="/TopProducts" className="hover:text-blue-700 transition-colors delay-100 duration-200">Top product</Link>
                 </div>
                 <div>
                     <Link to="/Myposts" className="hover:text-blue-700 delay-100 duration-200">My Posts</Link>
@@ -87,12 +111,13 @@ const Nav = () => {
                     <Link to="/Contact" className="hover:text-blue-700 delay-100 duration-200">Contact us</Link>
                 </div>
             </div>
+            {/* for small */}
             <div className="leftNav lg:hidden transition-all delay-75 duration-300 whitespace-nowrap lg:w-6/12 z-30 bg-white xl:w-5/12 flex flex-col lg:flex-row fixed left-0 top-0 w-0 overflow-hidden lg:static h-full items-center justify-center lg:justify-around font-body 2xl:text-3xl font-semibold text-neutral-600">
                 <div>
                     <Link to="/" className="hover:text-blue-700 transition-colors delay-100 duration-200">Home</Link>
                 </div>
                 <div>
-                    <Link to="/AddPosts" className="hover:text-blue-700 transition-colors delay-100 duration-200">Add Posts</Link>
+                    <Link to="/TopProducts" className="hover:text-blue-700 transition-colors delay-100 duration-200">Top product</Link>
                 </div>
                 <div>
                     <Link to="/Myposts" className="hover:text-blue-700 delay-100 duration-200">My Posts</Link>
@@ -101,12 +126,58 @@ const Nav = () => {
                     <Link to="/Contact" className="hover:text-blue-700 delay-100 duration-200">Contact us</Link>
                 </div>
             </div>
-            <div className="flex xl:w-4/12 lg:w-3/12 w-20 items-center justify-center space-x-14 2xl:space-x-32 xl:space-x-20 2xl:text-3xl font-body font-semibold text-neutral-700 tracking-wider">
+            {cookie.clid==undefined
+            &&
+            (<div className="flex xl:w-4/12 lg:w-3/12 w-20 items-center justify-center space-x-14 2xl:space-x-32 xl:space-x-20 2xl:text-3xl font-body font-semibold text-neutral-700 tracking-wider">
                 <Link to="/Login" className="hover:text-blue-700 hover:underline underline-offset-2 delay-100 duration-200 decoration-blue-600 text-blue-600">Login</Link>
                 <Link to="/Sign" className="hover:text-blue-600 hidden lg:flex hover:bg-white delay-100 duration-200 border-2 text-white bg-blue-600 border-blue-600 py-1.5 px-6 2xl:py-3 2xl:px-8 rounded-sm">Sign</Link>
-            </div>
+            </div>)
+            ||
+            (<div className="xl:w-4/12 hidden font-body lg:flex lg:w-4/12 w-20 items-center justify-center space-x-8 2xl:space-x-20 tracking-wider">
+                <Link to="create-Post"><button className="hover:text-red-400 hidden lg:flex hover:bg-white delay-100 duration-200 border-2 text-white bg-red-400 border-red-400 py-1.5 px-4 2xl:py-3 2xl:px-8 2xl:text-2xl rounded-sm">Create Post</button></Link>
+                <img src="./icons/notification.png" className="w-8 h-8 2xl:w-12 2xl:h-12 lg:flex cursor-pointer box-content hover:rounded-full hover:border-0 hover:bg-stone-200 p-3" alt="notification"/>
+                <div>
+                    <img src="./icons/fleche.png" onClick={()=>{setShowMenu(!showMenu)}} className="w-10 h-10 2xl:w-14 2xl:h-14 cursor-pointer box-content rounded-full hover:border-0 hover:bg-stone-200 p-1" alt="options"/>
+                    <NavDrop userData={userData} show={showMenu}/>
+                </div>
+            </div>)
+            }
         </div>
     )
 }
 
+
+const NavDrop=({userData,show})=>{
+    const style={
+        minHeight:show?"280px":"0" , 
+        height:show?"auto":"0" , 
+        padding:show?"":0
+    }
+    return(
+        <div style={style} className="overflow-hidden space-y-2 font-body w-2/6 2xl:w-3/12 border-0 p-3 2xl:p-5 bg-white shadow-lg shadow-neutral-400 rounded-md fixed right-14 2xl:right-40 z-50">
+            <Link to="/profile"><div className="profile-item hover:bg-stone-200 rounded-md p-2">
+                <img src={`./${userData.photo}`} className="image w-16 h-16 2xl:w-20 2xl:h-20 rounded-full flex-none" alt="photo Profile"/>
+                <h2 className="username 2xl:text-3xl text-lg font-bold">{userData.username}</h2>   
+                <p className="text 2xl:text-lg text-xs underline decoration-stone-600 font-semibold">Visit your Profile</p>
+            </div></Link>
+            <div className="h-px w-11/12 bg-neutral-300 mx-auto"></div>
+            <div className="p-2 flex items-center hover:bg-stone-200 space-x-3 rounded-md cursor-pointer w-full">
+                <div className="rounded-full bg-stone-300 box-content p-3 2xl:p-5 flex-none">
+                    <img src="./icons/bug.png" className="w-8 h-8 2xl:w-10 2xl:h-10" alt="logout"/>
+                </div>
+                <div>
+                    <p className="text-md 2xl:text-2xl font-semibold leading-0">report a bug</p>
+                    <p className="text-xs 2xl:text-lg leading-0">Help us to improve application performance and keep advicing people</p>
+                </div>
+            </div>
+            <div className="h-px w-11/12 bg-neutral-300 mx-auto"></div>
+            <div className="p-2 flex items-center hover:bg-stone-200 space-x-3 rounded-md cursor-pointer w-full">
+                <div className="rounded-full bg-stone-300 box-content p-3 2xl:p-5 flex-none">
+                    <img src="./icons/logout.png" className="w-8 h-8 2xl:w-10 2xl:h-10" alt="logout"/>
+                </div>
+                <p className="text-md font-semibold 2xl:text-2xl">Log Out</p>
+            </div>
+        </div>
+    )
+}
 export default Nav

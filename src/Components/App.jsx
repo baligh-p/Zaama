@@ -11,7 +11,6 @@ const App = () => {
                 <Route path="/" element={
                 <React.Fragment>
                     <Nav/>
-                    <Alert message="hey you should be connected to join our World"/>
                     <p>qsqsd</p>
                     <p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p><p>qsqsd</p>
                 </React.Fragment>

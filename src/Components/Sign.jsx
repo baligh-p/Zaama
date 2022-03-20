@@ -24,6 +24,7 @@ const FormSign=()=>{
     const [loadingUserName,setLoadingUserName]=useState(false)
     const [userExist,setUserExist]=useState(false)
     const [showRemoveImage,setShowRemoveImage]=useState(false)
+    const [imageError, setImageError] = useState(false)
     /*useRef*/
     const inputUserName=useRef(null) 
     const inputPassword=useRef(null)
@@ -155,12 +156,21 @@ const FormSign=()=>{
         }
     }
     const handlePhotoChange=()=>{
+
         if(inputImage.current.value!="")
         {
-            imageFile.current.src=URL.createObjectURL(inputImage.current.files[0])
-            imageFile.current.style.height="100%"
-            imageFile.current.style.width="100%"
-            setShowRemoveImage(true)
+            if(inputImage.current.files[0].type.indexOf("image")!=-1)
+            {
+                imageFile.current.src=URL.createObjectURL(inputImage.current.files[0])
+                imageFile.current.style.height="100%"
+                imageFile.current.style.width="100%"
+                setShowRemoveImage(true)
+                setImageError(false)
+            }
+            else 
+            {
+                removePhoto()
+            }
         }
         else 
         {
@@ -176,6 +186,7 @@ const FormSign=()=>{
         imageFile.current.style.width=""
         imageFile.current.src="./icons/addPhoto.png"
         setShowRemoveImage(false)
+        setImageError(false)
     }
     useEffect(() => {
         inputUserName.current.addEventListener("blur",checkUniqueUsername)
@@ -224,6 +235,7 @@ const FormSign=()=>{
                <div className="border-2 border-stone-400 w-full h-60 2xl:h-80 flex flex-col justify-center items-center" >
                     <img className="h-20 w-20" onClick={()=>{inputImage.current.click()}} src="./icons/addPhoto.png" alt="add photo of profile" ref={imageFile} />
                </div>
+               {imageError&&(<p className="w-full text-sm 2xl:text-lg text-yellow-500">Type Of Image not Supported</p>)}
             </div>
             {/*btn submit*/}
             <div className="lg:w-7/12 md:w-8/12 w-10/12">
