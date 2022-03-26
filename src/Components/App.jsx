@@ -3,7 +3,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom"
 import Nav from "./Nav"
 import Login from "./Login"
 import Sign from "./Sign"
-import Alert from './Alert'
+import Alert from './Alert' 
 const App = () => {
     return (
         <BrowserRouter>
@@ -17,7 +17,7 @@ const App = () => {
             }></Route>
                 <Route path="/login" element={<Login/>}></Route>
                 <Route path="/sign" element={<Sign/>}></Route>
-                <Route path="/alert" element={<Alert message="ation"/>}></Route>
+                <Route path="/alert" element={<Alert message="Action"/>}></Route>
             </Routes>
         </BrowserRouter>
     )

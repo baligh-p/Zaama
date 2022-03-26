@@ -31,16 +31,26 @@
 @media screen and (max-height: 680px) {
   .leftNav {
     div {
-      margin-top: 40px;
-      margin-bottom: 40px;
+      margin-top: 30px;
+      &:not(:last-child) {
+        margin-bottom: 30px;
+      }
+      &:last-child {
+        margin-bottom: 20px;
+      }
     }
   }
 }
 @media screen and (min-height: 681px) {
   .leftNav {
     div {
-      margin-top: 60px;
-      margin-bottom: 60px;
+      margin-top: 40px;
+      &:not(:last-child) {
+        margin-bottom: 40px;
+      }
+      &:last-child {
+        margin-bottom: 20px;
+      }
     }
   }
 }
