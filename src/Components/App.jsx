@@ -23,7 +23,6 @@ const App = () => {
                 <Route path="/sign" element={<Sign/>}></Route>
                 <Route path="/create-Post" element={<Nav/>}>
                     <Route index element={<CreatePostStep1/>}></Route>
-                    <Route path="step1" element={<CreatePostStep1/>}/>
                     <Route path="step2" element={<CreatePostStep2/>}/>
                 </Route>
                 <Route path="alert" element={<Alert message="Action"/>}></Route>

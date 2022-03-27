@@ -1,10 +1,9 @@
-import React from 'react'
+import React , {useEffect,useState} from 'react'
 
 const CreatePostStep2 = () => {
-    alert("this is step2")
   return (
-    <div className='mt-80 text-2xl'>
-        this is step2
+    <div className="">
+        
     </div>
   )
 }

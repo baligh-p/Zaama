@@ -1,5 +1,5 @@
 import React, { useEffect, useState ,useContext} from 'react'
-import { Link ,useLocation} from "react-router-dom"
+import { Link ,useLocation ,Outlet} from "react-router-dom"
 import { useCookies } from "react-cookie"
 import {contextApi} from "../index"
 import $ from "jquery" 
@@ -177,6 +177,7 @@ const Nav = () => {
             }
         </div>
         <CreatePostIcon></CreatePostIcon>
+        <Outlet></Outlet>
         </React.Fragment>
     )
 }
