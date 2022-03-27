@@ -11,7 +11,17 @@ const Nav = () => {
 
     /*test if we are in page post */ 
     const location=useLocation()
-    
+    const [showAddPost,setShowAddPost]=useState(true)
+    useEffect(()=>{
+        if(location.pathname.indexOf("/create-Post")!==-1)
+        {
+            setShowAddPost(false)
+        }
+        else
+        {
+            setShowAddPost(true)
+        }
+    })
 
 
     /*handle change burger with classes*/
@@ -167,7 +177,7 @@ const Nav = () => {
             </div>)
             ||
             (<div className="xl:w-4/12 hidden font-body lg:flex lg:w-4/12 w-20 items-center justify-center space-x-8 2xl:space-x-20 tracking-wider">
-                {(<Link to="create-Post"><button className="hover:text-red-400 hidden lg:flex hover:bg-white delay-100 duration-200 border-2 text-white bg-red-400 border-red-400 py-1.5 px-4 2xl:py-3 2xl:px-8 2xl:text-2xl rounded-sm">Create Post</button></Link>)}
+                {showAddPost&&(<Link to="create-Post"><button className="hover:text-red-400 hidden lg:flex hover:bg-white delay-100 duration-200 border-2 text-white bg-red-400 border-red-400 py-1.5 px-4 2xl:py-3 2xl:px-8 2xl:text-2xl rounded-sm">Create Post</button></Link>)}
                 <img src="/icons/notification.png" className="w-8 h-8 2xl:w-12 2xl:h-12 lg:flex cursor-pointer box-content hover:rounded-full hover:border-0 hover:bg-stone-200 p-3" alt="notification"/>
                 <div>
                     <img src="/icons/fleche.png" onClick={()=>{setShowMenu(!showMenu)}} className="w-10 h-10 2xl:w-14 2xl:h-14 cursor-pointer box-content rounded-full hover:border-0 hover:bg-stone-200 p-1" alt="options"/>
@@ -176,7 +186,7 @@ const Nav = () => {
             </div>)
             }
         </div>
-        <CreatePostIcon></CreatePostIcon>
+        <CreatePostIcon showAddPost={showAddPost}></CreatePostIcon>
         <Outlet></Outlet>
         </React.Fragment>
     )
